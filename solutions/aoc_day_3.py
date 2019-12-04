@@ -17,13 +17,12 @@ def do_work(x, y, steps, wire):
         pass
 
     if seen:
-        print(steps)
         crosses.add((x, y, steps + xs[x][y][0]))
     else:
         xs[x][y] = (steps, wire)
 
 if __name__ == "__main__":
-    with open('input_3.txt') as f:
+    with open('../input/input_3.txt') as f:
         wire = 0
         for line in f:
             line = line.split(',')
@@ -59,7 +58,6 @@ if __name__ == "__main__":
                         do_work(x, y, steps, wire)
              
     minimum = None
-    print(crosses)
     for cross in crosses:
         if minimum == None:
             minimum = cross[2]

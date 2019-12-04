@@ -21,7 +21,7 @@ def process_intcode(memory, noun, verb):
     return memory    
 
 if __name__ == "__main__":
-    with open('input_2.txt') as f:
+    with open('../input/input_2.txt') as f:
         line = f.read().split(',')
         line = list(map(lambda x: int(x), line))
 
