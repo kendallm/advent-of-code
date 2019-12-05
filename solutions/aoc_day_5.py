@@ -1,89 +1,51 @@
-def process_intcode(intcode):
+def get_instruction_pointer(intcode):
     if len(intcode) == 1:
         intcode = '0' + intcode
     instruction = intcode[-2:]
-    modes = intcode[:-2]
 
-    if(instruction == '99'):
-        return (0, abort, modes)
-    elif instruction == '01':
-        while len(modes) < 3:
-            modes = '0' + modes
-        return (3, get_instruction_pointer(instruction), modes)
-    elif instruction == '02':
-        while len(modes) < 3:
-            modes = '0' + modes
-        return (3, get_instruction_pointer(instruction), modes)
-    elif instruction == '03':
-        return (1, get_instruction_pointer(instruction), modes)
-    elif instruction == '04':
-        while len(modes) < 1:
-            modes = '0' + modes
-        return (1, get_instruction_pointer(instruction), modes)
-    elif instruction == '05':
-        while len(modes) < 2:
-            modes = '0' + modes
-        return (2, get_instruction_pointer(instruction), modes)
-    elif instruction == '06':
-        while len(modes) < 2:
-            modes = '0' + modes
-        return (2, get_instruction_pointer(instruction), modes)
-    elif instruction == '07':
-        while len(modes) < 3:
-            modes = '0' + modes
-        return (3, get_instruction_pointer(instruction), modes)
-    elif instruction == '08':
-        while len(modes) < 3:
-            modes = '0' + modes
-        return (3, get_instruction_pointer(instruction), modes)
-
-
-def get_instruction_pointer(instruction):
     if len(instruction) < 2:
         instruction = '0' + instruction
 
     if(instruction == '99'):
-        return abort
+        return (abort, 0)
     elif instruction == '01':
-        return add
+        return (add, 3)
     elif instruction == '02':
-        return mul
+        return (mul, 3)
     elif instruction == '03':
-        return get_input
+        return (get_input, 1)
     elif instruction == '04':
-        return output
+        return (output, 1)
     elif instruction == '05':
-        return jump_if_true
+        return (jump_if_true, 2)
     elif instruction == '06':
-        return jump_if_false
+        return (jump_if_false, 2)
     elif instruction == '07':
-        return less_than
+        return (less_than, 3)
     elif instruction == '08':
-        return equals
+        return (equals, 3)
     else:
         raise ValueError("Invalid instruction", instruction)
 
 
-def jump_if_true(memory, modes, args):
-    p1 = int(memory[int(args[0])]) if modes[2] == '0' else int(args[0])
-    p2 = int(memory[int(args[1])]) if modes[1] == '0' else int(args[1])
-    print("jump if true")
+def jump_if_true(address, memory, modes, args):
+    p1 = int(memory[int(args[0])]) if modes[1] == '0' else int(args[0])
+    p2 = int(memory[int(args[1])]) if modes[0] == '0' else int(args[1])
     if p1 != 0:
-        return get_instruction_pointer(memory[p2])(memory, modes, args)
-    return memory
+        return True, p2
+    return False, address
 
 
-def jump_if_false(memory, modes, args):
-    print("jump if false")
+def jump_if_false(address, memory, modes, args):
     p1 = int(memory[int(args[0])]) if modes[1] == '0' else int(args[0])
     p2 = int(memory[int(args[1])]) if modes[0] == '0' else int(args[1])
     if p1 == 0:
-        return get_instruction_pointer(memory[p2])(memory, modes, args)
-    return memory
+        return True, p2
+    return False, address
 
-def less_than(memory, modes, args):
-    p1 = int(memory[int(args[0])]) if modes[1] == '0' else int(args[0])
-    p2 = int(memory[int(args[1])]) if modes[0] == '0' else int(args[1])
+def less_than(address, memory, modes, args):
+    p1 = int(memory[int(args[0])]) if modes[2] == '0' else int(args[0])
+    p2 = int(memory[int(args[1])]) if modes[1] == '0' else int(args[1])
     if p1 < p2:
         memory[int(args[2])] = '1'
     else:
@@ -91,7 +53,7 @@ def less_than(memory, modes, args):
     return memory
 
 
-def equals(memory, modes, args):
+def equals(address, memory, modes, args):
     p1 = int(memory[int(args[0])]) if modes[2] == '0' else int(args[0])
     p2 = int(memory[int(args[1])]) if modes[1] == '0' else int(args[1])
     if p1 == p2:
@@ -100,15 +62,14 @@ def equals(memory, modes, args):
         memory[int(args[2])] = '0'
     return memory
 
-def mul(memory, modes, args):
+def mul(address, memory, modes, args):
     p1 = int(memory[int(args[0])]) if modes[2] == '0' else int(args[0])
     p2 = int(memory[int(args[1])]) if modes[1] == '0' else int(args[1])
     output = p1 * p2
-
     memory[int(args[2])] = str(output)
     return memory
 
-def add(memory, modes, args):
+def add(address, memory, modes, args):
     p1 = int(memory[int(args[0])]) if modes[2] == '0' else int(args[0])
     p2 = int(memory[int(args[1])]) if modes[1] == '0' else int(args[1])
     output = p1 + p2
@@ -116,28 +77,37 @@ def add(memory, modes, args):
     memory[int(args[2])] = str(output)
     return memory
 
-def get_input(memory, modes, args):
+def get_input(address, memory, modes, args):
     p1 = int(args[0])
     memory[p1] = input("Input value: ")
     return memory
 
-def output(memory, modes, args):
+def output(address, memory, modes, args):
     p1 = int(memory[int(args[0])]) if modes[0] == '0' else int(args[0])
     print( p1 )
 
-def abort(memory, modes, args):
+def abort(address, memory, modes, args):
     exit(0)
 
 if __name__ == "__main__":
     with open('../input/input_5.txt') as f:
         line = f.read()
-        # line = '3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,9'
         memory = line.split(',')
-    
-    itr =  enumerate(memory)
-    for i, v in itr:
-        options = process_intcode(v)
+    i = 0
+    while i < len(memory):
+        v = memory[i]
         args = []
-        for j in range(options[0]):
-            args.append(next(itr)[1])            
-        options[1](memory, options[2], args)
+        (instruction, num_args) = get_instruction_pointer(v)
+        for j in range(num_args):
+            args.append(memory[i + j + 1])   
+        modes = v[:-2]   
+        while len(modes) < num_args:
+            modes = '0' + modes     
+        if(instruction == jump_if_false or instruction == jump_if_true):
+            jumped, update = instruction(i, memory, modes, args)
+            if jumped:
+                i = int(update)
+                continue
+        else:
+            instruction(i, memory, modes, args)
+        i = i + num_args + 1
