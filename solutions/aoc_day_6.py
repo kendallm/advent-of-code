@@ -3,7 +3,6 @@ class Node:
         self.name = name
         self.orbitors = []
         self.orbiting = None
-        self.parent = None
     
     def add_orbitor(self, node):
         self.orbitors.append(node)
@@ -85,7 +84,7 @@ if __name__ == "__main__":
     directs = galaxy.get_num_direct_orbits()
     indirects = galaxy.get_num_indirect_orbits()
     transfers = galaxy.get_min_transfers(galaxy.get_or_add_node("YOU"), galaxy.get_or_add_node("SAN"))
-    
+
     print(f"Direct orbits: {directs}, Indirect orbits: {indirects}, Total: {directs + indirects}")
     print(f"Min transfers {transfers}")
                
