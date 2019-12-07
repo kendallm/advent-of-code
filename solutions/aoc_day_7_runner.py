@@ -1,8 +1,9 @@
 from subprocess import Popen, PIPE, STDOUT
 import itertools
 from tqdm import tqdm
+import asyncio
 
-def do_work_feedback_loop(a, b, c, d, e):
+async def do_work_feedback_loop(a, b, c, d, e):
     x = Popen(['/Users/kendall/.pyenv/shims/python', './aoc_day_7_feedback_loop.py'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
 
     inputs = [a, b, c, d, e]
@@ -33,16 +34,30 @@ def do_work_feedback_loop(a, b, c, d, e):
     x.stdin.close()
     return int(seed.strip())
 
-maximum = 0
-codes = list(itertools.permutations(range(5)))
-for [a, b, c, d, e] in tqdm(codes, total=len(codes)):
-    val = do_work_feedback_loop(a, b, c, d, e)
-    maximum = max(val, maximum)
-print(f'\npart 1 {maximum}')
+async def main():
+    codes = itertools.permutations(range(5))
+    tasks = []
+    for [a, b, c, d, e] in codes:
+        tasks.append(asyncio.create_task(do_work_feedback_loop(a, b, c, d, e)))
+        # maximum = max(val, maximum)
+    for task in tasks:
+        await task
+    maximum = max([x.result() for x in tasks])
+    
+    codes = itertools.permutations(range(5, 10))
+    tasks_second = []
+    for [a, b, c, d, e] in codes:
+        tasks_second.append(asyncio.create_task(do_work_feedback_loop(a, b, c, d, e)))
+        # maximum = max(val, maximum)
 
-maximum = 0
-codes = list(itertools.permutations(range(5, 10)))
-for [a, b, c, d, e] in tqdm(codes, total=len(codes)):
-    val = do_work_feedback_loop(a, b, c, d, e)
-    maximum = max(val, maximum)
-print(f'\npart 2 {maximum}')
+    for task in tasks:
+        await task
+    maximum = max([x.result() for x in tasks])
+    print(f'\npart 1 {maximum}')
+    
+    for task in tasks_second:
+        await task
+    maximum = max([x.result() for x in tasks_second])
+    print(f'\npart 2 {maximum}')
+
+asyncio.run(main())
