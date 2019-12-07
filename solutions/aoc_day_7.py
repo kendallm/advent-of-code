@@ -120,29 +120,3 @@ class Computer:
     def abort(self, address, modes, args):
         self._done = True
         return 0
-
-if __name__ == "__main__":
-    with open('../input/input_5.txt') as f:
-        line = f.read()
-        memory = line.split(',')
-    computer = Computer(memory)
-    computer.run()
-
-if __name__ == "__main__":
-    sum = 0
-    with open("../input/input_7.txt") as f:
-        memory = f.read()
-    # memory ='3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5'
-    memory = memory.split(',')
-    amps = [Computer(memory.copy()),
-        Computer(memory.copy()),
-        Computer(memory.copy()),
-        Computer(memory.copy()),
-        Computer(memory.copy())]
-    i = 0
-    for amp in amps:
-        i += 1
-        amp.set_name(str(i))
-
-    for amp in amps:
-        amp.run()
