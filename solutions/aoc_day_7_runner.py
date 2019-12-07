@@ -35,20 +35,13 @@ async def do_work_feedback_loop(a, b, c, d, e):
     return int(seed.strip())
 
 async def main():
-    codes = itertools.permutations(range(5))
     tasks = []
-    for [a, b, c, d, e] in codes:
+    for [a, b, c, d, e] in itertools.permutations(range(5)):
         tasks.append(asyncio.create_task(do_work_feedback_loop(a, b, c, d, e)))
-        # maximum = max(val, maximum)
-    for task in tasks:
-        await task
-    maximum = max([x.result() for x in tasks])
     
-    codes = itertools.permutations(range(5, 10))
     tasks_second = []
-    for [a, b, c, d, e] in codes:
+    for [a, b, c, d, e] in itertools.permutations(range(5, 10)):
         tasks_second.append(asyncio.create_task(do_work_feedback_loop(a, b, c, d, e)))
-        # maximum = max(val, maximum)
 
     for task in tasks:
         await task
