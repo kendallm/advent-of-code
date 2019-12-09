@@ -2,6 +2,7 @@ from collections import defaultdict
 class Computer:
 
     def __init__(self, memory):
+        memory = memory.split(',')
         self._memory = defaultdict(int)
         for i in range(len(memory)):
             self._memory[i] = memory[i]
@@ -70,7 +71,9 @@ class Computer:
 
     
     def adjust_base(self, address, modes, args):
-        self._base += int(args[0])
+        p1 = int(self._memory[int(args[0])]) if modes[0] == '0' else int(args[0])
+        p1 = int(self._memory[self._base + int(args[0])]) if modes[0] == '2' else p1
+        self._base += int(p1)
 
     def jump_if_true(self, address, modes, args):
         p1 = int(self._memory[int(args[0])]) if modes[1] == '0' else int(args[0])
@@ -97,10 +100,15 @@ class Computer:
         p1 = int(self._memory[self._base + int(args[0])]) if modes[2] == '2' else p1
         p2 = int(self._memory[int(args[1])]) if modes[1] == '0' else int(args[1])
         p2 = int(self._memory[self._base + int(args[1])]) if modes[1] == '2' else p2
+        
+        idx = int(args[2])
+        if modes[0] == '2':
+            idx = idx + self._base
+            
         if p1 < p2:
-            self._memory[int(args[2])] = '1'
+            self._memory[idx] = '1'
         else:
-            self._memory[int(args[2])] = '0'
+            self._memory[idx] = '0'
 
 
     def equals(self, address, modes, args):
@@ -108,10 +116,15 @@ class Computer:
         p1 = int(self._memory[self._base + int(args[0])]) if modes[2] == '2' else p1
         p2 = int(self._memory[int(args[1])]) if modes[1] == '0' else int(args[1])
         p2 = int(self._memory[self._base + int(args[1])]) if modes[1] == '2' else p2
+        
+        idx = int(args[2])
+        if modes[0] == '2':
+            idx = idx + self._base
+            
         if p1 == p2:
-            self._memory[int(args[2])] = '1'
+            self._memory[idx] = '1'
         else:
-            self._memory[int(args[2])] = '0'
+            self._memory[idx] = '0'
 
     def mul(self, address, modes, args):
         p1 = int(self._memory[int(args[0])]) if modes[2] == '0' else int(args[0])
@@ -119,7 +132,11 @@ class Computer:
         p2 = int(self._memory[int(args[1])]) if modes[1] == '0' else int(args[1])
         p2 = int(self._memory[self._base + int(args[1])]) if modes[1] == '2' else p2
         output = p1 * p2
-        self._memory[int(args[2])] = str(output)
+        
+        idx = int(args[2])
+        if modes[0] == '2':
+            idx = idx + self._base
+        self._memory[idx] = str(output)
 
     def add(self, address, modes, args):
         p1 = int(self._memory[int(args[0])]) if modes[2] == '0' else int(args[0])
@@ -127,16 +144,17 @@ class Computer:
         p2 = int(self._memory[int(args[1])]) if modes[1] == '0' else int(args[1])
         p2 = int(self._memory[self._base + int(args[1])]) if modes[1] == '2' else p2
         output = p1 + p2
-
-        self._memory[int(args[2])] = str(output)
+        idx = int(args[2])
+        if modes[0] == '2':
+            idx = idx + self._base
+        self._memory[idx] = str(output)
 
     def get_input(self, address, modes, args):
         p1 = int(args[0])
         if modes[0] == '2':
-            print(f"{p1} {base} In relative mode")
-            self._memory[p1 + self._base] = self._input.pop()
-        else:
-            self._memory[p1] = self._input.pop()
+            p1 += self._base
+
+        self._memory[p1] = self._input.pop()
 
     def output(self, address, modes, args):
         p1 = int(self._memory[int(args[0])]) if modes[0] == '0' else int(args[0])
@@ -150,15 +168,11 @@ class Computer:
 
 def main():
     with open('../input/input_9.txt') as f:
-        inp = f.readline()
-    
-    # inp = '109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99'
-    # inp = '1102,34915192,34915192,7,4,7,99,0'
-    # inp = '104,1125899906842624,99'
-    memory = inp.split(',')
+        memory = f.readline()
+
 
     computer = Computer(memory)
-    computer._input.append(1)
+    computer._input.append("2")
     computer.run()
 
 if __name__ == "__main__":
