@@ -132,9 +132,11 @@ class Computer:
 
     def get_input(self, address, modes, args):
         p1 = int(args[0])
-        if modes[0] == '1':
-            p1 += self._base
-        self._memory[p1] = self._input.pop()
+        if modes[0] == '2':
+            print(f"{p1} {base} In relative mode")
+            self._memory[p1 + self._base] = self._input.pop()
+        else:
+            self._memory[p1] = self._input.pop()
 
     def output(self, address, modes, args):
         p1 = int(self._memory[int(args[0])]) if modes[0] == '0' else int(args[0])
