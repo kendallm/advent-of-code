@@ -1,10 +1,10 @@
 from collections import defaultdict, deque
 from utils import Computer
 from math import inf
+
 def main():
     with open('../input/input_9.txt') as f:
         memory = f.readline()
-
 
     computer = Computer(memory, deque(), inf)
     computer._input.append("2")

@@ -11,7 +11,6 @@ def main():
     position = (0 ,0)
     headed = "N"
     grid = {}
-    # grid[position] = "0"
     
     computer.add_input("1")
     computer.run()
