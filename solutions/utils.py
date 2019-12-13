@@ -1,7 +1,9 @@
 from collections import defaultdict, deque
+import curses
+
 class Computer:
 
-    def __init__(self, memory, output, pauses):
+    def __init__(self, memory, output, pauses, window):
         memory = memory.split(',')
         self._memory = defaultdict(int)
         for i in range(len(memory)):
@@ -16,6 +18,13 @@ class Computer:
         self._paused = True
         self._input = deque()
         self._output = output
+        self._window = window
+        self._inpause = False
+        
+        self._prev_ins = None
+        self._prev_addr = None
+        self._prev_modes = None
+        self._prev_args = None
 
     def set_name(self, name):
         self._name = name
@@ -26,6 +35,10 @@ class Computer:
     def run(self):
         self._pauses = self._default_pauses
         self._paused = False
+        if self._inpause == True:
+            self.get_input(self._prev_addr, self._prev_modes, self._prev_args)
+            self._inpause = False
+                    
         while not self._halted and not self._paused:
             v = self._memory[self._address]
             args = []
@@ -41,8 +54,15 @@ class Computer:
                     self._address = int(update)
                     continue
             else:
-                if instruction(self._address, modes, args) == 0:
+                res = instruction(self._address, modes, args)
+                if res == 0:
                     return
+                if res == 10:
+                    self._paused = True
+                    self._prev_args = args
+                    self._prev_modes = modes
+                    self._prev_addr = self._address
+                    
             self._address = self._address + num_args + 1
                 
     def get_instruction_pointer(self, intcode):
@@ -158,11 +178,18 @@ class Computer:
         self._memory[idx] = str(output)
 
     def get_input(self, address, modes, args):
+        if self._inpause == False:
+            self._inpause = True
+            return 10
         p1 = int(args[0])
         if modes[0] == '2':
             p1 += self._base
-
+        # print("in")
+        # self._memory[p1] = self._window.getstr().decode(encoding="utf-8")
+        self._paused = True
+        # print(self._memory[p1])
         self._memory[p1] = self._input.popleft()
+        return 11
 
     def output(self, address, modes, args):
         p1 = int(self._memory[int(args[0])]) if modes[0] == '0' else int(args[0])

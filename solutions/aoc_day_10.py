@@ -2,11 +2,38 @@ from aoc_day_9 import Computer
 import functools
 from collections import defaultdict
 import heapq
-from math import gcd, sqrt, atan2
+from math import gcd, sqrt, atan2, pi
 
 
 nodes = set()
 
+def destroy_nodes(spot, visible):
+    angles = list(visible[spot].items())
+    angles.sort()
+    
+    for angle in angles:
+        heapq.heapify(angle[1])
+    
+    start = 0
+    for angle in angles:
+        if angle[0] >= pi/2:
+            break
+        start += 1
+        
+    count = 0
+    while count < 199   :
+        angle = angles[start]
+        nodes = angle[1]
+        if len(nodes) > 0:
+            node = nodes.pop(0)
+            print(node)
+            count += 1
+            if count == 199:
+                print(node[0] * 100 + node[1])
+            continue
+        start = (start - 1)
+        if start < 0:
+            start = len(angles) - 1
 
 def can_see(nodes):
     visible = defaultdict(lambda: defaultdict(list))
@@ -20,24 +47,9 @@ def can_see(nodes):
         if len(v) > best:
             best = len(v)
             spot = k
-    angles = list(visible[spot].items())
-    angles.sort()
-    
-    for angle in angles:
-        heapq.heapify(angle[1])
-    
-    count = 0
-    while count < 200:
-        for angle in angles:
-            nodes = angle[1]
-            if len(nodes) > 0:
-                node = nodes.pop(0)
-                count += 1
-                if count == 200:
-                    print(node[0] * 100 + node[1])
-                continue
         
-    print(f"Best astroid can see {best} others") 
+    print(f"Best astroid can see {best} others from spot {spot}") 
+    destroy_nodes(spot, visible)
     
                    
                         
