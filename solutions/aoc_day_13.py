@@ -2,6 +2,7 @@ from utils import Computer
 from collections import deque, defaultdict
 from math import inf
 import curses
+from curses import wrapper
 from time import sleep
 
 def main():
@@ -25,8 +26,7 @@ def print_screen(stdscr, screen):
             stdscr.addstr(k[1], k[0], v)
         except:
             pass
-    stdscr.refresh()
-    sleep(1)            
+    stdscr.refresh()           
 
 
 def main2(stdscr, win):
@@ -41,49 +41,69 @@ def main2(stdscr, win):
     screen = {}
     ball_location = (0,0)
     prev_ball = (0,0)
-    position = (0,0)
+    position = None
     prev_position = (0,0)
+    score = 0
     while not computer._halted:
         while computer._paused:
-            out = []
+            moves = 0
             while len(computer._output) > 0:
-                out.append(computer._output.pop(0))
-            while(len(out) > 0):
-                x = out.pop(0)
-                y = out.pop(0)
+                moves += 1
+                x = computer._output.pop(0)
+                y = computer._output.pop(0)
                 coord = (x, y)
-                tile = out.pop(0)
+                tile = computer._output.pop(0)
                 if x == -1 and y == 0:
-                    print(tile)
+                    score = tile
+                    screen[(60,20)] = "Total score " + str(score)
                 if tile == 4: # Ball
                     screen[coord] = '*'
                     prev_ball = ball_location
-                    ball_location = coord 
+                    ball_location = (coord[0], coord[1])
                 elif tile == 1: #wall
                     screen[coord] = '|'
                 elif tile == 2: #block
                     screen[coord] = '#'
                 elif tile == 3:
                     screen[coord] = '~'
-                    prev_position = position
-                    position = coord
+                    position = (coord[0], coord[1])
                 elif tile == 0:
                     screen[coord] = '.'
-            if prev_position[0] < prev_ball[0]:
+            if moves == 0:
+                pass
+            elif position[0] < ball_location[0]:
                 computer.add_input('1')
-            elif position[0] > prev_ball[0]:
+            elif position[0] > ball_location[0]:
                 computer.add_input('-1')
             else:
                 computer.add_input('0')
             print_screen(stdscr, screen)  
             computer.run()
-        print(tile)
-            
+    while len(computer._output) > 0:
+        moves += 1
+        x = computer._output.pop(0)
+        y = computer._output.pop(0)
+        coord = (x, y)
+        tile = computer._output.pop(0)
+        if x == -1 and y == 0:
+            score = tile
+            screen[(60,20)] = "Total score " + str(score)
+        if tile == 4: # Ball
+            screen[coord] = '*'
+            prev_ball = ball_location
+            ball_location = (coord[0], coord[1])
+        elif tile == 1: #wall
+            screen[coord] = '|'
+        elif tile == 2: #block
+            screen[coord] = '#'
+        elif tile == 3:
+            screen[coord] = '~'
+            position = (coord[0], coord[1])
+        elif tile == 0:
+            screen[coord] = '.'
+    print_screen(stdscr, screen)  
             
 if __name__ == "__main__":
-    import curses
-    from curses import wrapper
-
     stdscr = curses.initscr()
     curses.noecho()
     curses.cbreak()
@@ -91,5 +111,5 @@ if __name__ == "__main__":
     begin_x = 0; begin_y = 0
     height = 500; width = 500
     win = curses.newwin(height, width, begin_y, begin_x)
-    main2(stdscr, win)
+    wrapper(main2(stdscr, win))
 
