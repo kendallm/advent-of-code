@@ -5,42 +5,46 @@ import heapq
 from math import gcd, sqrt, atan2, pi
 
 
-nodes = set()
-
 def destroy_nodes(spot, visible):
     angles = list(visible[spot].items())
     angles.sort()
     
+    q1 = []
+    q2 = []
+    q3 = []
+    q4 = []
     for angle in angles:
-        heapq.heapify(angle[1])
+        if angle[1][0][0] >= spot[0]:
+            if angle[1][0][1] < spot[1]:
+                q1.append(angle)
+            else:
+                q2.append(angle)
+        if angle[1][0][0] <= spot[0]:
+            if angle[1][0][1] > spot[1]:
+                q3.append(angle)
+            else:
+                q4.append(angle)
     
-    start = 0
-    for angle in angles:
-        if angle[0] >= pi/2:
-            break
-        start += 1
-        
+    angles = q1 + q2 + q3 + q4
+
     count = 0
-    while count < 199   :
-        angle = angles[start]
+    for angle in angles:
         nodes = angle[1]
-        if len(nodes) > 0:
-            node = nodes.pop(0)
-            print(node)
-            count += 1
-            if count == 199:
-                print(node[0] * 100 + node[1])
+        if len(nodes) == 0:
             continue
-        start = (start - 1)
-        if start < 0:
-            start = len(angles) - 1
+        node = nodes.pop(0)
+        count += 1
+        ans = node[0] * 100 + node[1]
+        if count == 201:
+            print(f"ans = {ans}")
+
 
 def can_see(nodes):
     visible = defaultdict(lambda: defaultdict(list))
     for node in nodes:
         for other in nodes:
-            angle = atan2(node[0] - other[0], node[1] - other[1])
-            visible[node][angle].append(other)
+            angle = atan2(node[1] - other[1], node[0] - other[0])
+            visible[node][angle].append((other))
     best = 0  
     spot = None
     for k, v in visible.items():
@@ -51,9 +55,9 @@ def can_see(nodes):
     print(f"Best astroid can see {best} others from spot {spot}") 
     destroy_nodes(spot, visible)
     
-                   
                         
 def main():
+    nodes = set()
     with open('../input/input_10.txt') as f:
         y = 0
         for line in f:
