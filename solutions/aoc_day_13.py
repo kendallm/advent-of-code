@@ -111,5 +111,10 @@ if __name__ == "__main__":
     begin_x = 0; begin_y = 0
     height = 500; width = 500
     win = curses.newwin(height, width, begin_y, begin_x)
-    wrapper(main2(stdscr, win))
+    main2(stdscr, win)
+    curses.nocbreak()   # Turn off cbreak mode
+    curses.echo()       # Turn echo back on
+    curses.curs_set(1)  # Turn cursor back on
+    # If initialized like `my_screen = curses.initscr()`
+    stdscr.keypad(0) # Turn off keypad keys
 
