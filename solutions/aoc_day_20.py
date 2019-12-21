@@ -1,4 +1,4 @@
-import os
+import os, sys
 from collections import *
 import re
 
@@ -21,11 +21,14 @@ def build_edges(grid, portals):
             grid[(x,y)].add((x, y + 1))
         if (x, y - 1) in grid:
             grid[(x,y)].add((x, y - 1))
-    for portal in portals.values():
-        if len(portal) > 1:
-            grid[portal[0]].add(portal[1])
-            grid[portal[1]].add(portal[0])
 
+    # need to join outer and inner here
+    for portal_level, v in portals.items():
+        for portal in v.values():
+            print(portal)
+            if len(portal) > 1:
+                grid[portal[0]].add(portal[1])
+                grid[portal[1]].add(portal[0])
     return grid
 
 
@@ -34,13 +37,17 @@ def get_horizontal_portals(line, y, portals):
     ms = p.finditer(line)
     for m in ms:
         (start, stop) = m.span()
-        if start == 0 or line[start - 1] == ' ':
+        if start == 0:
+            #Outer
+            portals["outer"][m.group(0)].append((stop + 1, y))
+        elif line[start - 1] == ' ':
             #to right
-            portal = (m.group(0), (stop + 1, y))
-        else:
+            portals["inner"][m.group(0)].append((stop + 1, y))
+        elif line[start - 2] == ' ':
             #to left
-            portal = (m.group(0), (start, y))
-        portals[portal[0]].append(portal[1])
+            portals["inner"][m.group(0)].append((start, y))
+        else:
+            portals["outer"][m.group(0)].append((start, y))
 
 
 def get_vertical_portals(line, found_first, prev_prev, portals, prev, y):
@@ -51,11 +58,17 @@ def get_vertical_portals(line, found_first, prev_prev, portals, prev, y):
             return True
         (_, stop) = m.span()
         if prev_prev != '' and prev_prev[stop - 1] == '.':
+            if prev_prev[2] == ' ':
+                portals["inner"][prev[stop - 1] + line[stop - 1]].append((stop, y - 2))
+            else:
+                portals["outer"][prev[stop - 1] + line[stop - 1]].append((stop, y - 2))
             #bottom
-            portals[prev[stop - 1] + line[stop - 1]].append((stop, y - 2))
         else:
             #top
-            portals[prev[stop - 1] + line[stop - 1]].append((stop, y + 1))
+            if prev_prev == '':
+                portals["outer"][prev[stop - 1] + line[stop - 1]].append((stop, y + 1))
+            else:
+                portals["inner"][prev[stop - 1] + line[stop - 1]].append((stop, y + 1))
     return False
 
 
@@ -76,9 +89,46 @@ def get_num_steps(grid, start, stop):
                 seen.add(node)
     return steps
 
+def get_steps(grid, start, stop, steps, seen=set()):
+    # print(f"start: {start}, stop: {stop}, steps {steps}")
+    seen.add(start)
+    # print(start, stop)
+    if start == stop:
+        print(f"found at {steps}")
+        return steps
+    nodes = grid[start]
+    if nodes.issubset(seen):
+        return steps
+    for node in nodes:
+        if node in seen:
+            continue
+        steps + get_steps(grid, node, stop, steps + 1, seen.copy())
+    return steps
+
+
+def get_steps_levels(grid, start, stop, steps, seen=set(), level=0):
+    # print(f"start: {start}, stop: {stop}, steps {steps}")
+    seen.add(start)
+    print(start, stop)
+    if start == stop and level == 0:
+        print(f"found at {steps}")
+        return steps
+    nodes = grid[start]
+    if nodes.issubset(seen):
+        return steps
+    for node in nodes:
+        if node in seen:
+            continue
+        steps + get_steps(grid, node, stop, steps + 1, seen.copy())
+    return steps
+
+
 def main():
     grid = {}
-    portals = defaultdict(list)
+    portals = {} 
+    portals["inner"] = defaultdict(list)
+    portals["outer"] = defaultdict(list)
+
     with open('../input/input_20.txt') as f:
         y = 0
         prev = ''
@@ -97,9 +147,10 @@ def main():
             prev_prev = prev
             prev = line
     grid = build_edges(grid, portals)
-    start = portals['AA'][0]
-    target = portals['ZZ'][0]
-    print(get_num_steps(grid, start, target))
+    start = portals['outer']['AA'][0]
+    target = portals['outer']['ZZ'][0]
+    get_steps(grid, start, target, 0, set())
 
 if __name__ == "__main__":
+    sys.setrecursionlimit(2000)
     main()
