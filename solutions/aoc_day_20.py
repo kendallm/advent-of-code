@@ -1,7 +1,7 @@
 import os, sys
 from collections import *
 import re
-
+import copy
 
 class Node(object):
     def __init__(self, name, edges=set()):
@@ -23,12 +23,13 @@ def build_edges(grid, portals):
             grid[(x,y)].add((x, y - 1))
 
     # need to join outer and inner here
-    for portal_level, v in portals.items():
-        for portal in v.values():
-            print(portal)
-            if len(portal) > 1:
-                grid[portal[0]].add(portal[1])
-                grid[portal[1]].add(portal[0])
+    ps = portals["inner"]
+    for k, v in portals['outer'].items():
+        ps[k].extend(v)
+    for portal in ps.values():
+        if len(portal) > 1:
+            grid[portal[0]].add(portal[1])
+            grid[portal[1]].add(portal[0])
     return grid
 
 
@@ -46,6 +47,8 @@ def get_horizontal_portals(line, y, portals):
         elif line[start - 2] == ' ':
             #to left
             portals["inner"][m.group(0)].append((start, y))
+        elif line[stop] == ' ':
+            portals["inner"][m.group(0)].append((start, y))
         else:
             portals["outer"][m.group(0)].append((start, y))
 
@@ -58,7 +61,7 @@ def get_vertical_portals(line, found_first, prev_prev, portals, prev, y):
             return True
         (_, stop) = m.span()
         if prev_prev != '' and prev_prev[stop - 1] == '.':
-            if prev_prev[2] == ' ':
+            if prev[2] == '#':
                 portals["inner"][prev[stop - 1] + line[stop - 1]].append((stop, y - 2))
             else:
                 portals["outer"][prev[stop - 1] + line[stop - 1]].append((stop, y - 2))
@@ -106,20 +109,29 @@ def get_steps(grid, start, stop, steps, seen=set()):
     return steps
 
 
-def get_steps_levels(grid, start, stop, steps, seen=set(), level=0):
-    # print(f"start: {start}, stop: {stop}, steps {steps}")
-    seen.add(start)
-    print(start, stop)
+def get_steps_levels(grid, start, stop, steps, portals, seen=defaultdict(set), level=0):
+    seen[level].add(start)
     if start == stop and level == 0:
         print(f"found at {steps}")
         return steps
     nodes = grid[start]
-    if nodes.issubset(seen):
+    if nodes.issubset(seen[level]):
         return steps
     for node in nodes:
-        if node in seen:
+        if node in seen[level]:
             continue
-        steps + get_steps(grid, node, stop, steps + 1, seen.copy())
+        if node in portals['outer'] and level == 0:
+            print("skip out")
+            continue
+        if node in portals['inner']:
+            seen[level].add(node)
+            # print(node)
+            level += 1
+        elif node in portals['outer']:
+            seen[level].add(node)
+            # print(node)
+            level -= 1
+        steps + get_steps_levels(grid, node, stop, steps + 1, portals, seen, level)
     return steps
 
 
@@ -146,11 +158,23 @@ def main():
             y += 1
             prev_prev = prev
             prev = line
-    grid = build_edges(grid, portals)
+    grid = build_edges(grid, copy.deepcopy(portals))
     start = portals['outer']['AA'][0]
     target = portals['outer']['ZZ'][0]
-    get_steps(grid, start, target, 0, set())
+    # get_steps(grid, start, target, 0, set())
+    ps = {
+        'inner': set(),
+        'outer': set()
+    }
+    
+
+    for portal in portals['inner'].values():
+        ps['inner'] = ps['inner'].union(set(portal))
+        
+    for portal in portals['outer'].values():
+        ps['outer'] = ps['outer'].union(set(portal))
+    get_steps_levels(grid, start, target, 0, ps)
 
 if __name__ == "__main__":
-    sys.setrecursionlimit(2000)
+    sys.setrecursionlimit(10000)
     main()
