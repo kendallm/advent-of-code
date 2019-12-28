@@ -9,11 +9,8 @@ def should_die(pos, grid):
     adjceent.append((pos[0] + 1, pos[1]))
     adjceent.append((pos[0] - 1, pos[1]))
     vals = []
-    for i in range(4):
-        try:
-            vals.append(grid[adjceent[i]])
-        except:
-            pass
+    for item in adjceent:
+        vals.append(grid[item])
     c = Counter(vals)
     return c[True] != 1
 
@@ -24,23 +21,22 @@ def should_infest(pos, grid):
     adjceent.append((pos[0] + 1, pos[1]))
     adjceent.append((pos[0] - 1, pos[1]))
     vals = []
-    for i in range(5):
-        try:
-            vals.append(grid[adjceent[i]])
-        except:
-            pass
+    for item in adjceent:
+        vals.append(grid[item])
     c = Counter(vals)
-    print(c)
     return c[True] == 1 or c[True] == 2
 
 
 def tick(grid):
-    grid_c = {}
-    for spot in grid:
+    grid_c = defaultdict(lambda:False)
+    old_keys = set(grid)
+    for spot in old_keys:
         if grid[spot]:
             grid_c[spot] = not should_die(spot, grid)
         else:
             grid_c[spot] = should_infest(spot, grid)
+    for spot in set(grid).difference(old_keys):
+        grid_c[spot] = grid[spot]
     return grid_c
 
 def calculate_diversity(grid):
@@ -57,7 +53,7 @@ def calculate_diversity(grid):
 def main():
     pp = pprint.PrettyPrinter()
     seen = set()
-    grid = {}
+    grid = defaultdict(lambda:False)
     with open('../input/input_24.txt') as f:
         y = 0
         for line in f:
@@ -68,19 +64,19 @@ def main():
     seen.add(calculate_diversity(grid))
 
     
-    while(True): 
-        if iters < 4:
-            print(grid)
-            print()
+    # while(True): 
+    #     grid = tick(grid)
+    #     diversity = calculate_diversity(grid)
+    #     if diversity in seen:
+    #         break
+    #     else:
+    #         seen.add(diversity)
+    #     iters += 1
+    for i in range(10):
         grid = tick(grid)
-        diversity = calculate_diversity(grid)
-        if diversity in seen:
-            break
-        else:
-            seen.add(diversity)
-        iters += 1
-    print(grid)
-    print(diversity)
+    c = Counter(grid.values())
+    print(i)
+    print(c[True])
 
 
 if __name__ == "__main__":
