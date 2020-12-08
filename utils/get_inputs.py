@@ -2,6 +2,15 @@ import sys
 import requests
 from pathlib import Path
 
+class ProblemParser:
+    def __init__(self):
+        pass
+    
+    def load_input(self, year, day):
+        with open(f"{year}/input/input_{day}.txt") as f:
+            lines = f.readlines()
+        return lines
+    
 if __name__ == '__main__':
     s = requests.session()
     year = sys.argv[1]
