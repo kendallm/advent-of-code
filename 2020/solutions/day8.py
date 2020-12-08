@@ -18,6 +18,7 @@ def run(program):
     cache = {}
     part1 = False
     looped = set()
+    
     while pointer < len(program):
         command, value = program[pointer]
         sign, number = parse_value(value)
@@ -27,26 +28,28 @@ def run(program):
             if not part1:
                 print("Part1", acc)
                 part1 = True
-            
-            if command == 'jmp':
-                command = 'nop'
+
+            if command == "jmp":
+                command = "nop"
             else:
-                command = 'nop'
+                command = "nop"
             acc = cache[pointer]
             looped.add(pointer)
-        
+
         cache[pointer] = acc
-        if command == 'jmp':
-            if sign == '-':
+        if command == "jmp":
+            if sign == "-":
                 pointer -= number
             else:
                 pointer += number
         else:
-            if command != 'nop':
-                if sign == '-':
+            if command != "nop":
+                if sign == "-":
                     acc -= number
                 else:
                     acc += number
             pointer += 1
     return acc
+
+
 print("Part2", run(parse_program()))
