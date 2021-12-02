@@ -28,6 +28,17 @@ if __name__ == '__main__':
         with open(f'{year}/input/input_{problem_number}.txt', 'w') as f:
             f.write(response.content.decode('utf-8'))
         Path(f'{year}/solutions/day{problem_number}.py').touch()
+        with open(f'{year}/solutions/day{problem_number}.py', 'w') as f:
+            f.write(f"""import sys
+from pathlib import Path
+path_root = Path(__file__).parents[2]
+sys.path.append(str(path_root))
+
+from utils.get_inputs import ProblemParser
+
+
+lines = ProblemParser().load_input({year}, {problem_number})
+""")
     else:
         print("Input file not found/available")
         sys.exit(1)
