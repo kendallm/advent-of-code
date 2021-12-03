@@ -17,7 +17,6 @@ def count_bits_in_positions(in_lines):
                 bits[i] += 1
     return bits
 
-# This is broken
 def bit_string_to_int(bit_string):
     return int(bit_string, 2)
 
