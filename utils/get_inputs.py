@@ -13,7 +13,7 @@ class ProblemParser:
     def load_input(self, year, day):
         with open(f"{year}/input/input_{day}.txt") as f:
             lines = f.readlines()
-        return lines
+        return [line.strip() for line in lines]
 
 
 PYTHON_SOLUTION_TEMPLATE = """import sys
@@ -28,7 +28,7 @@ lines = ProblemParser().load_input(%s, %s)
 """
 
 LOGGER = logging.getLogger()
-coloredlogs.install(level='DEBUG')
+coloredlogs.install(level="DEBUG")
 
 
 def get_session_cookie() -> str:
@@ -59,7 +59,7 @@ def generate_python_template(year, problem_number):
     LOGGER.info("Created python solution file")
 
 
-def download_input_file(year, problem_number):
+def generate_input_file(year, problem_number):
     s = requests.session()
     p = Path(f"{year}/input/input_{problem_number}.txt")
     if p.is_file() and p.stat().st_size > 0:
@@ -70,14 +70,14 @@ def download_input_file(year, problem_number):
     if response.ok:
         with open(f"{year}/input/input_{problem_number}.txt", "w") as f:
             f.write(response.content.decode("utf-8"))
+        LOGGER.info("Downloaded input file")
     else:
         LOGGER.error("Input file not found/available")
-        sys.exit(1)
-    LOGGER.info("Downloaded input file")
+
 
 if __name__ == "__main__":
     year = sys.argv[1]
     problem_number = sys.argv[2]
 
-    download_input_file(year, problem_number)
+    generate_input_file(year, problem_number)
     generate_python_template(year, problem_number)
