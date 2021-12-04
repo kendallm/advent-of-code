@@ -1,6 +1,7 @@
 import sys
 from collections import defaultdict
 from pathlib import Path
+
 path_root = Path(__file__).parents[2]
 sys.path.append(str(path_root))
 
@@ -9,16 +10,19 @@ from utils.get_inputs import ProblemParser
 
 lines = ProblemParser().load_input(2021, 3)
 
+
 def count_bits_in_positions(in_lines):
     bits = defaultdict(int)
     for line in in_lines:
         for i, c in enumerate(line.strip()):
-            if c == '1':
+            if c == "1":
                 bits[i] += 1
     return bits
 
+
 def bit_string_to_int(bit_string):
     return int(bit_string, 2)
+
 
 def part1():
     bits = count_bits_in_positions(lines)
@@ -39,6 +43,7 @@ def part1():
     print("=== part 1 ====")
     print(bit_string_to_int(gamma) * bit_string_to_int(epsilon))
 
+
 def find_most_common_in_position(bits, pos, count):
     zeros = count - bits[pos]
     ones = bits[pos]
@@ -46,6 +51,7 @@ def find_most_common_in_position(bits, pos, count):
     if ones >= zeros:
         return "1"
     return "0"
+
 
 def part2():
     oxy = lines.copy()
@@ -88,6 +94,7 @@ def part2():
     co2 = bit_string_to_int(res[0])
     print("=== part 2 ====")
     print(oxy * co2)
+
 
 part1()
 part2()
