@@ -37,7 +37,7 @@ def part2():
     position = 0
     depth = 0
     aim = 0
-    
+
     for line in lines:
         direction, dist = parse_line(line)
         if direction == "forward":

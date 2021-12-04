@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+
 path_root = Path(__file__).parents[2]
 sys.path.append(str(path_root))
 
@@ -24,7 +25,7 @@ class BingoCard(object):
             row = row.split()
             for j, number in enumerate(row):
                 number = int(number)
-                self.card[(i,j)] = False
+                self.card[(i, j)] = False
                 self.numbers[number] = (i, j)
 
     def mark_number(self, number) -> None:
@@ -32,15 +33,15 @@ class BingoCard(object):
             self.card[self.numbers[number]] = True
 
     def won(self) -> bool:
-        return self._check_horizontal() or \
-            self._check_diagonal() or \
-            self._check_vertical()
+        return (
+            self._check_horizontal() or self._check_diagonal() or self._check_vertical()
+        )
 
     def _check_horizontal(self) -> bool:
         for i in range(5):
             col = True
             for j in range(5):
-                col = col and self.card[(j,i)]
+                col = col and self.card[(j, i)]
             if col:
                 return True
         return False
@@ -48,19 +49,19 @@ class BingoCard(object):
     def _check_diagonal(self) -> bool:
         diag = True
         for i in range(5):
-            diag = diag and self.card[(i,i)]
+            diag = diag and self.card[(i, i)]
         return diag
 
     def _check_vertical(self) -> bool:
         for i in range(5):
             row = True
             for j in range(5):
-                row = row and self.card[(i,j)]
+                row = row and self.card[(i, j)]
             if row:
                 return True
         return False
 
-    def sum_unmarked_numbers(self) -> bool:
+    def sum_unmarked_numbers(self) -> int:
         result = 0
         for number, pos in self.numbers.items():
             if not self.card[pos]:
@@ -117,4 +118,3 @@ def part2():
 
 part1()
 part2()
-
