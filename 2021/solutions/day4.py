@@ -33,9 +33,7 @@ class BingoCard(object):
             self.card[self.numbers[number]] = True
 
     def won(self) -> bool:
-        return (
-            self._check_horizontal() or self._check_diagonal() or self._check_vertical()
-        )
+        return self._check_horizontal() or self._check_vertical()
 
     def _check_horizontal(self) -> bool:
         for i in range(5):
@@ -45,12 +43,6 @@ class BingoCard(object):
             if col:
                 return True
         return False
-
-    def _check_diagonal(self) -> bool:
-        diag = True
-        for i in range(5):
-            diag = diag and self.card[(i, i)]
-        return diag
 
     def _check_vertical(self) -> bool:
         for i in range(5):
