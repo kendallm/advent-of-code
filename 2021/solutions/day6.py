@@ -23,14 +23,12 @@ def loop(x, fish):
     children = 0
     for n in range(x):
         for i in range(len(fish)):
-            fish[i] -= 1
-            if fish[i] < 0:
-                if i == 0:
-                    children += 1
-                    print(n + 1, children)
+            if fish[i] == 0:
                 fish.append(8)
                 fish[i] = 6
-    return fish, children
+            else:
+                fish[i] -= 1
+    return fish
 
 
 def solver(day_fish, days):
@@ -45,6 +43,6 @@ def solver(day_fish, days):
         day_fish = temp
     print(sum(day_fish))
 
-
+print(len(loop(80, fish.copy())))
 solver(day_fish.copy(), 80)
 solver(day_fish.copy(), 256)
