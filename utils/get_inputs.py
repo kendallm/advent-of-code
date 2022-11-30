@@ -49,7 +49,11 @@ def download_input(s, year, problem_number, session_cookie) -> Response:
 
 
 def generate_python_template(year, problem_number):
+    directory = Path(f"{year}/solutions/")
+    if not directory.is_dir():
+        directory.mkdir(parents=True)
     solution = Path(f"{year}/solutions/day{problem_number}.py")
+
     if solution.is_file():
         LOGGER.warning("Python solution file already exists")
         return
@@ -61,6 +65,11 @@ def generate_python_template(year, problem_number):
 
 def generate_input_file(year, problem_number):
     s = requests.session()
+
+    directory = Path(f"{year}/input/")
+    if not directory.is_dir():
+        directory.mkdir(parents=True)
+
     p = Path(f"{year}/input/input_{problem_number}.txt")
     if p.is_file() and p.stat().st_size > 0:
         LOGGER.warning("Input file already exists")
