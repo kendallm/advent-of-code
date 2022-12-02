@@ -37,14 +37,14 @@ def get_session_cookie() -> str:
     return session_cookie
 
 
-def download_input(s, year, problem_number, session_cookie) -> Response:
+def download_input(session, year, problem_number, session_cookie) -> Response:
     cookie_obj = requests.cookies.create_cookie(
         domain=".adventofcode.com", name="session", value=session_cookie
     )
-    s.cookies.set_cookie(cookie_obj)
+    session.cookies.set_cookie(cookie_obj)
 
     url = f"https://adventofcode.com/{year}/day/{problem_number}/input"
-    response = s.get(url)
+    response = session.get(url, headers={"user-agent": "https://github.com/kendallm/advent-of-code https://mastodon.social/@kendallmorgan"})
     return response
 
 
@@ -64,18 +64,18 @@ def generate_python_template(year, problem_number):
 
 
 def generate_input_file(year, problem_number):
-    s = requests.session()
+    session = requests.session()
 
     directory = Path(f"{year}/input/")
     if not directory.is_dir():
         directory.mkdir(parents=True)
 
-    p = Path(f"{year}/input/input_{problem_number}.txt")
-    if p.is_file() and p.stat().st_size > 0:
+    path = Path(f"{year}/input/input_{problem_number}.txt")
+    if path.is_file() and path.stat().st_size > 0:
         LOGGER.warning("Input file already exists")
         return
     session_cookie = get_session_cookie()
-    response = download_input(s, year, problem_number, session_cookie)
+    response = download_input(session, year, problem_number, session_cookie)
     if response.ok:
         with open(f"{year}/input/input_{problem_number}.txt", "w") as f:
             f.write(response.content.decode("utf-8"))
