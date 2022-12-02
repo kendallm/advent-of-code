@@ -86,6 +86,9 @@ def generate_input_file(year: str, problem_number: str):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print("Usage: python get_inputs {year} {day}")
+        exit(1)
     year = sys.argv[1]
     problem_number = sys.argv[2]
 

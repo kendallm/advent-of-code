@@ -20,6 +20,10 @@ rock_score = 1
 paper_score = 2
 scissors_score = 3
 
+lose = "X"
+draw = "Y"
+win = "Z"
+
 score = 0
 for line in lines:
     them, me = line.split(" ")
@@ -46,14 +50,6 @@ for line in lines:
             score += 3 + scissors_score
 print(score)
 
-lose = "X"
-draw = "Y"
-win = "Z"
-
-rock_score = 1
-paper_score = 2
-scissors_score = 3
-
 score = 0
 for line in lines:
     them, result = line.split(" ")
@@ -78,4 +74,29 @@ for line in lines:
             score += 6 + rock_score
         else:
             score += 3 + scissors_score
+def play_game():
+    score = 0
+    for line in lines:
+        them, result = line.split(" ")
+        if them == rock:
+            if result == lose:
+                score += scissors_score
+            elif result == win:
+                score += 6 + paper_score
+            else:
+                score += 3 + rock_score
+        if them == paper:
+            if result == lose:
+                score += rock_score
+            elif result == win:
+                score += 6 + scissors_score
+            else:
+                score += 3 + paper_score
+        if them == scissors:
+            if result == lose:
+                score += paper_score
+            elif result == win:
+                score += 6 + rock_score
+            else:
+                score += 3 + scissors_score
 print(score)
