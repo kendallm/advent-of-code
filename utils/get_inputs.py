@@ -37,7 +37,9 @@ def get_session_cookie() -> str:
     return session_cookie
 
 
-def download_input(session, year, problem_number, session_cookie) -> Response:
+def download_input(year: str, problem_number: str) -> Response:
+    session = requests.session()
+    session_cookie = get_session_cookie()
     cookie_obj = requests.cookies.create_cookie(
         domain=".adventofcode.com", name="session", value=session_cookie
     )
@@ -47,41 +49,40 @@ def download_input(session, year, problem_number, session_cookie) -> Response:
     response = session.get(url, headers={"user-agent": "https://github.com/kendallm/advent-of-code https://mastodon.social/@kendallmorgan"})
     return response
 
-
-def generate_python_template(year, problem_number):
-    directory = Path(f"{year}/solutions/")
+def get_path(dir: str, file: str) -> Path:
+    directory = Path(dir)
     if not directory.is_dir():
         directory.mkdir(parents=True)
-    solution = Path(f"{year}/solutions/day{problem_number}.py")
+    p = Path(f"{dir}{file}")
+    if p.is_file():
+        LOGGER.warning(f"File: {p} already exists")
+        raise FileExistsError
+    return p
 
-    if solution.is_file():
-        LOGGER.warning("Python solution file already exists")
+def generate_python_template(year: str, problem_number: str):
+    try:
+        solution_path = get_path(f"{year}/solutions/", f"day{problem_number}.py")
+        solution_path.touch()
+        with solution_path.open("w") as f:
+            f.write(PYTHON_SOLUTION_TEMPLATE % (year, problem_number))
+        LOGGER.info("Created python solution file")
+    except Exception as _:
         return
-    solution.touch()
-    with open(f"{year}/solutions/day{problem_number}.py", "w") as f:
-        f.write(PYTHON_SOLUTION_TEMPLATE % (year, problem_number))
-    LOGGER.info("Created python solution file")
 
 
-def generate_input_file(year, problem_number):
-    session = requests.session()
+def generate_input_file(year: str, problem_number: str):
+    try:
+        input_path = get_path(f"{year}/input/", f"input_{problem_number}.txt")
+        response = download_input(year, problem_number)
+        if not response.ok:
+            LOGGER.error("Input file not found/available")
 
-    directory = Path(f"{year}/input/")
-    if not directory.is_dir():
-        directory.mkdir(parents=True)
-
-    path = Path(f"{year}/input/input_{problem_number}.txt")
-    if path.is_file() and path.stat().st_size > 0:
-        LOGGER.warning("Input file already exists")
-        return
-    session_cookie = get_session_cookie()
-    response = download_input(session, year, problem_number, session_cookie)
-    if response.ok:
-        with open(f"{year}/input/input_{problem_number}.txt", "w") as f:
+        with input_path.open("w") as f:
             f.write(response.content.decode("utf-8"))
         LOGGER.info("Downloaded input file")
-    else:
-        LOGGER.error("Input file not found/available")
+    except Exception as _:
+        return
+
 
 
 if __name__ == "__main__":
