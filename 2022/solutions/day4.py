@@ -1,11 +1,12 @@
-from utils.get_inputs import ProblemParser
 from pathlib import Path
-
-import dataclasses
 import sys
 
 path_root = Path(__file__).parents[2]
 sys.path.append(str(path_root))
+
+import dataclasses
+
+from utils.get_inputs import ProblemParser
 
 
 @dataclasses.dataclass
