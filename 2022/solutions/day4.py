@@ -15,12 +15,12 @@ class Range:
     right: int
 
 
-def overlaps(first, second):
+def fully_contains(first, second):
     return first.left <= second.left and first.right >= second.right or \
            second.left <= first.left and second.right >= first.right
 
 
-def any_overlap(first, second):
+def overlaps(first, second):
     return (first.left <= second.left and (first.right >= second.right or first.right >= second.left)) or \
            (second.left <= first.left and (second.right >= first.right or second.right >= first.left))
 
@@ -43,9 +43,9 @@ def main():
     for i in range(0, len(ranges), 2):
         first = ranges[i]
         second = ranges[i + 1]
-        if overlaps(first, second):
+        if fully_contains(first, second):
             count += 1
-        if any_overlap(first, second):
+        if overlaps(first, second):
             any_count += 1
     print(count)
     print(any_count)
