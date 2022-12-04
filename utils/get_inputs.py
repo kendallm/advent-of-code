@@ -24,7 +24,11 @@ sys.path.append(str(path_root))
 from utils.get_inputs import ProblemParser
 
 
-lines = ProblemParser().load_input(%s, %s)
+def main():
+    lines = ProblemParser().load_input(%s, %s)
+
+if __name__ == '__main__':
+    main()
 """
 
 LOGGER = logging.getLogger()

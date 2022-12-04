@@ -1,14 +1,14 @@
 import dataclasses
 import sys
-from collections import defaultdict
 from pathlib import Path
+
 path_root = Path(__file__).parents[2]
 sys.path.append(str(path_root))
 
 from utils.get_inputs import ProblemParser
 
-
 lines = ProblemParser().load_input(2022, 4)
+
 
 @dataclasses.dataclass
 class Range:
@@ -18,12 +18,12 @@ class Range:
 
 def overlaps(first, second):
     return first.left <= second.left and first.right >= second.right or \
-        second.left <= first.left and second.right >= first.right
+           second.left <= first.left and second.right >= first.right
 
 
 def any_overlap(first, second):
     return (first.left <= second.left and (first.right >= second.right or first.right >= second.left)) or \
-        (second.left <= first.left and (second.right >= first.right or second.right >= first.left))
+           (second.left <= first.left and (second.right >= first.right or second.right >= first.left))
 
 
 def parse_range(item):
@@ -53,6 +53,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
