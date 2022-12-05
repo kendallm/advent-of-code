@@ -10,10 +10,12 @@ class ProblemParser:
     def __init__(self):
         pass
 
-    def load_input(self, year, day):
+    def load_input(self, year, day, strip=True):
         with open(f"{year}/input/input_{day}.txt") as f:
             lines = f.readlines()
-        return [line.strip() for line in lines]
+
+        return [line.strip() for line in lines] if strip else [line.strip("\n") for line in lines]
+
 
 
 PYTHON_SOLUTION_TEMPLATE = """import sys
