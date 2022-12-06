@@ -9,25 +9,22 @@ from utils.get_inputs import ProblemParser
 
 
 def find_start_of_packet(line):
-    count = 0
-    for i in range(len(line)):
-        chars = line[i: i + 4]
-        counter = Counter(chars)
-        if len(counter.items()) == 4:
-            return count + 4
-        count += 1
-    raise Exception("Start of packet not found")
+    return count_until_unique(line, 4)
 
 
 def find_start_of_message(line):
+    return count_until_unique(line, 14)
+
+
+def count_until_unique(line: str, num_unique: int) -> int:
     count = 0
     for i in range(len(line)):
-        chars = line[i: i + 14]
+        chars = line[i: i + num_unique]
         counter = Counter(chars)
-        if len(counter.items()) == 14:
-            return count + 14
+        if len(counter.items()) == num_unique:
+            return count + num_unique
         count += 1
-    raise Exception("Start of message not found")
+    raise Exception(f"unable to find {num_unique} chars")
 
 
 def main():
@@ -35,7 +32,6 @@ def main():
     line = lines[0]
     print(find_start_of_packet(line))
     print(find_start_of_message(line))
-
 
 
 if __name__ == '__main__':
