@@ -8,11 +8,11 @@ sys.path.append(str(path_root))
 from utils.get_inputs import ProblemParser
 
 
-def find_start_of_packet(line):
+def find_start_of_packet(line: str) -> int:
     return count_until_unique(line, 4)
 
 
-def find_start_of_message(line):
+def find_start_of_message(line: str) -> int:
     return count_until_unique(line, 14)
 
 
