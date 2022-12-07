@@ -16,7 +16,6 @@ class File:
 
 
 class Directory:
-
     def __init__(self, name: str, parent):
         self.name = name
         self.size: int = 0
@@ -35,9 +34,11 @@ class Directory:
             curr.size += size
             curr = curr.parent
 
-    def add_directory(self, directory):
+    def add_directory(self, directory) -> bool:
         if directory.name not in self.directories.keys():
             self.directories[directory.name] = directory
+            return True
+        return False
 
     def tree(self, indent=""):
         print(f'{indent} - {self.name} (dir size={self.size})')
@@ -72,25 +73,30 @@ def main():
                     curr = curr.directories[name]
                 else:
                     directory = Directory(name, curr)
-                    curr.add_directory(directory)
-                    dirs.add(directory)
+                    added = curr.add_directory(directory)
+                    if added:
+                        dirs.add(directory)
                     curr = curr.directories[name]
 
         else:
             name = split_line[1]
             if split_line[0] == "dir":
                 directory = Directory(name, curr)
-                curr.add_directory(directory)
-                dirs.add(directory)
+                added = curr.add_directory(directory)
+                if added:
+                    dirs.add(directory)
             elif split_line[0] != "dir":
                 size = int(split_line[0])
                 file = File(name=name, size=size)
                 curr.add_file(file)
 
     result = [d.size for d in dirs if d.size <= 100000]
-    # root.tree("")
-    print(sum(result))
+    print(f"Part 1: {sum(result)}")
 
+    free_space = 70000000 - root.size
+    need_to_free = -(free_space-30000000)
+    result = [d.size for d in dirs if d.size >= need_to_free]
+    print(f"Part 2: {min(result)}")
 
 
 
