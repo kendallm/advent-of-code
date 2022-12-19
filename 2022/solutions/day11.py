@@ -43,6 +43,10 @@ class Game:
 
     def __init__(self, lines):
         self.monkeys = self.parse_monkeys(lines)
+        self.all_mods = 1
+        for monkey in self.monkeys:
+            self.all_mods *= monkey.test
+
 
     def parse_monkeys(self, lines):
         monkeys = []
@@ -87,6 +91,20 @@ class Game:
                 monkey.items = []
         return inspections
 
+    def play_round_without_worry(self):
+        inspections = []
+        for _, monkey in enumerate(self.monkeys):
+            inspections.append(len(monkey.items))
+            for i, item in enumerate(monkey.items):
+                new = self.execute_operation(monkey.operation, item)
+                new = new % self.all_mods
+                if new % monkey.test == 0:
+                    self.monkeys[monkey.true].items.append(new)
+                else:
+                    self.monkeys[monkey.false].items.append(new)
+                monkey.items = []
+        return inspections
+
     def execute_operation(self, operation, old):
         lhs, op, rhs = operation
         if lhs == "old":
@@ -107,10 +125,17 @@ class Game:
 def main():
     lines = ProblemParser().load_input(2022, 11)
     game = Game(lines)
+    game2 = Game(lines)
     rounds = 20
     total = [0 for _ in range(len(game.monkeys))]
     for _ in range(rounds):
         inspections = game.play_round()
+        total = [a + b for a, b in zip(total, inspections)]
+
+    rounds = 10000
+    total = [0 for _ in range(len(game2.monkeys))]
+    for i in range(rounds):
+        inspections = game2.play_round_without_worry()
         total = [a + b for a, b in zip(total, inspections)]
     total.sort(key=lambda x: -x)
     print(total[0] * total[1])
