@@ -39,6 +39,7 @@ class Monkey:
     true={self.true}, 
     false={self.false}\n"""
 
+
 class Game:
 
     def __init__(self, lines):
@@ -46,7 +47,6 @@ class Game:
         self.all_mods = 1
         for monkey in self.monkeys:
             self.all_mods *= monkey.test
-
 
     def parse_monkeys(self, lines):
         monkeys = []
@@ -121,6 +121,7 @@ class Game:
         if op == "+":
             return lhs + rhs
         raise Exception("Unknown op")
+
 
 def main():
     lines = ProblemParser().load_input(2022, 11)

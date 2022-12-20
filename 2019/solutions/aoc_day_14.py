@@ -15,7 +15,7 @@ def main():
             prev = Node(output_chemical[1])
             graph.add(prev)
             for cost in input_chemicals:
-                if prev.name == "FUEL":
+                if prev.elevation == "FUEL":
                     fuel = prev
                 node = Node(cost[1])
                 prev.edges.add((node, cost[0]))

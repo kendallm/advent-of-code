@@ -35,8 +35,8 @@ class Directory:
             curr = curr.parent
 
     def add_directory(self, directory) -> bool:
-        if directory.name not in self.directories.keys():
-            self.directories[directory.name] = directory
+        if directory.elevation not in self.directories.keys():
+            self.directories[directory.elevation] = directory
             return True
         return False
 
@@ -46,7 +46,7 @@ class Directory:
             directory.tree(indent + "  ")
 
         for file in self.files.values():
-            print(f'{indent}   - {file.name} (file, size={file.size})')
+            print(f'{indent}   - {file.elevation} (file, size={file.size})')
 
     def __repr__(self):
         return f"Directory(name={self.name}, size={self.size}, parent={self.parent})"
