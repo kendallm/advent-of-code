@@ -50,15 +50,15 @@ class Galaxy:
         curr = me.orbiting
         while curr != None:
             count += 1
-            my_orbits[curr.name] = count 
+            my_orbits[curr.elevation] = count
             curr = curr.orbiting
         
         count = -1
         curr = to.orbiting
         while curr != None:
             count += 1
-            if curr.name in my_orbits:
-                return my_orbits[curr.name] + count
+            if curr.elevation in my_orbits:
+                return my_orbits[curr.elevation] + count
             curr = curr.orbiting
         
         raise(f"No path to node {to} from {me}")
