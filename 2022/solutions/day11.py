@@ -8,7 +8,6 @@ from utils.get_inputs import ProblemParser
 
 
 class Monkey:
-
     def __init__(self):
         self.items = []
         self.test = 0
@@ -41,7 +40,6 @@ class Monkey:
 
 
 class Game:
-
     def __init__(self, lines):
         self.monkeys = self.parse_monkeys(lines)
         self.all_mods = 1
@@ -142,5 +140,5 @@ def main():
     print(total[0] * total[1])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+
 path_root = Path(__file__).parents[2]
 sys.path.append(str(path_root))
 
@@ -10,7 +11,7 @@ class Elf:
     def __init__(self, sack: str):
         size = len(sack)
         mid = len(sack) // 2
-        left, right = (sack[0: mid], sack[mid: size])
+        left, right = (sack[0:mid], sack[mid:size])
         lset = set(left)
         rset = set(right)
         self.left = lset
@@ -35,7 +36,7 @@ def main():
     def part2(elves):
         groups = []
         for start_idx in range(0, len(elves), 3):
-            a, b, c = elves[start_idx:start_idx + 3]
+            a, b, c = elves[start_idx : start_idx + 3]
             group = a.full_sack.intersection(b.full_sack).intersection(c.full_sack)
             groups.append(list(group)[0])
         print(sum([calculate_priority(g) for g in groups]))
@@ -47,6 +48,7 @@ def main():
 
     part1(elves)
     part2(elves)
+
 
 if __name__ == "__main__":
     main()

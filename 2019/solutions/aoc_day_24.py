@@ -2,9 +2,10 @@ from functools import reduce
 from collections import *
 import pprint
 
+
 def should_die(pos, grid):
     adjceent = []
-    adjceent.append((pos[0], pos[1] +  1))
+    adjceent.append((pos[0], pos[1] + 1))
     adjceent.append((pos[0], pos[1] - 1))
     adjceent.append((pos[0] + 1, pos[1]))
     adjceent.append((pos[0] - 1, pos[1]))
@@ -14,9 +15,10 @@ def should_die(pos, grid):
     c = Counter(vals)
     return c[True] != 1
 
+
 def should_infest(pos, grid):
     adjceent = []
-    adjceent.append((pos[0], pos[1] +  1))
+    adjceent.append((pos[0], pos[1] + 1))
     adjceent.append((pos[0], pos[1] - 1))
     adjceent.append((pos[0] + 1, pos[1]))
     adjceent.append((pos[0] - 1, pos[1]))
@@ -28,7 +30,7 @@ def should_infest(pos, grid):
 
 
 def tick(grid):
-    grid_c = defaultdict(lambda:False)
+    grid_c = defaultdict(lambda: False)
     old_keys = set(grid)
     for spot in old_keys:
         if grid[spot]:
@@ -39,13 +41,14 @@ def tick(grid):
         grid_c[spot] = grid[spot]
     return grid_c
 
+
 def calculate_diversity(grid):
     power = 0
     diversity = 0
-    
+
     for spot in grid:
         if grid[spot]:
-            diversity += (2**power)
+            diversity += 2**power
         power += 1
     return diversity
 
@@ -53,18 +56,17 @@ def calculate_diversity(grid):
 def main():
     pp = pprint.PrettyPrinter()
     seen = set()
-    grid = defaultdict(lambda:False)
-    with open('../input/input_24.txt') as f:
+    grid = defaultdict(lambda: False)
+    with open("../input/input_24.txt") as f:
         y = 0
         for line in f:
             for i, v in enumerate(line.strip()):
-                grid[(y, i)] = v =='#'
-            y += 1   
+                grid[(y, i)] = v == "#"
+            y += 1
     iters = 0
     seen.add(calculate_diversity(grid))
 
-    
-    # while(True): 
+    # while(True):
     #     grid = tick(grid)
     #     diversity = calculate_diversity(grid)
     #     if diversity in seen:

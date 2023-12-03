@@ -9,11 +9,13 @@ lines = [int(x) for x in lines]
 
 preamble = set()
 
+
 def two_sum(target):
     for num in preamble:
         if target - num in preamble:
             return True
     return False
+
 
 invalid = None
 for i, v in enumerate(lines):
@@ -30,13 +32,13 @@ size = 2
 
 i = 0
 done = False
-while(not done):
+while not done:
     if i == len(lines):
         i = 0
         size += 1
     if size == len(lines):
         sys.exit()
-    nums = lines[i:i+size]
+    nums = lines[i : i + size]
     if sum(nums) == invalid:
         list.sort(nums)
         print("Part 2", nums[0] + nums[-1])

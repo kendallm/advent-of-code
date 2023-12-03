@@ -16,17 +16,26 @@ class Range:
 
 
 def fully_contains(first, second):
-    return first.left <= second.left and first.right >= second.right or \
-           second.left <= first.left and second.right >= first.right
+    return (
+        first.left <= second.left
+        and first.right >= second.right
+        or second.left <= first.left
+        and second.right >= first.right
+    )
 
 
 def overlaps(first, second):
-    return (first.left <= second.left and (first.right >= second.right or first.right >= second.left)) or \
-           (second.left <= first.left and (second.right >= first.right or second.right >= first.left))
+    return (
+        first.left <= second.left
+        and (first.right >= second.right or first.right >= second.left)
+    ) or (
+        second.left <= first.left
+        and (second.right >= first.right or second.right >= first.left)
+    )
 
 
 def parse_range(item):
-    a, b = item.split('-')
+    a, b = item.split("-")
     return Range(int(a), int(b))
 
 
@@ -34,7 +43,7 @@ def main():
     lines = ProblemParser().load_input(2022, 4)
     ranges = []
     for line in lines:
-        first, second = line.split(',')
+        first, second = line.split(",")
         ranges.append(parse_range(first))
         ranges.append(parse_range(second))
 
@@ -51,5 +60,5 @@ def main():
     print(any_count)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -8,7 +8,6 @@ from utils.get_inputs import ProblemParser
 
 
 class Cpu:
-
     def __init__(self, lines):
         self.register = 1
         self.cycles = [1]
@@ -38,14 +37,16 @@ def main():
     lines = ProblemParser().load_input(2022, 10)
     cpu = Cpu(lines)
     cpu.run()
-    res = sum([
-        cpu.cycles[20] * 20,
-        cpu.cycles[60] * 60,
-        cpu.cycles[100] * 100,
-        cpu.cycles[140] * 140,
-        cpu.cycles[180] * 180,
-        cpu.cycles[220] * 220
-    ])
+    res = sum(
+        [
+            cpu.cycles[20] * 20,
+            cpu.cycles[60] * 60,
+            cpu.cycles[100] * 100,
+            cpu.cycles[140] * 140,
+            cpu.cycles[180] * 180,
+            cpu.cycles[220] * 220,
+        ]
+    )
     print(res)
     print(get_crt_image(cpu))
 
@@ -62,9 +63,9 @@ def get_crt_image(cpu):
             image += "."
         count = (count + 1) % 40
         if count == 0:
-            image += '\n'
+            image += "\n"
     return image
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

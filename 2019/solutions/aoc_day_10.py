@@ -8,7 +8,7 @@ from math import gcd, sqrt, atan2, pi
 def destroy_nodes(spot, visible):
     angles = list(visible[spot].items())
     angles.sort()
-    
+
     q1 = []
     q2 = []
     q3 = []
@@ -24,7 +24,7 @@ def destroy_nodes(spot, visible):
                 q3.append(angle)
             else:
                 q4.append(angle)
-    
+
     angles = q1 + q2 + q3 + q4
 
     count = 0
@@ -45,32 +45,32 @@ def can_see(nodes):
         for other in nodes:
             angle = atan2(node[1] - other[1], node[0] - other[0])
             visible[node][angle].append((other))
-    best = 0  
+    best = 0
     spot = None
     for k, v in visible.items():
         if len(v) > best:
             best = len(v)
             spot = k
-        
-    print(f"Best astroid can see {best} others from spot {spot}") 
+
+    print(f"Best astroid can see {best} others from spot {spot}")
     destroy_nodes(spot, visible)
-    
-                        
+
+
 def main():
     nodes = set()
-    with open('../input/input_10.txt') as f:
+    with open("../input/input_10.txt") as f:
         y = 0
         for line in f:
             x = 0
             for i in range(len(line)):
                 spot = line[i]
-                if spot == '#':
+                if spot == "#":
                     position = (x, y)
-                    nodes.add(position)               
+                    nodes.add(position)
                 x += 1
             y += 1
     can_see(nodes)
-    
+
 
 if __name__ == "__main__":
     main()

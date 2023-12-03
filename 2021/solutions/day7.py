@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+
 path_root = Path(__file__).parents[2]
 sys.path.append(str(path_root))
 
@@ -19,6 +20,7 @@ def part1(positions):
         acc = sum([i - x if i > x else x - i for x in positions])
         gas[i] = acc
     print(min(gas))
+
 
 """
 Can also use @functools.cache but this seems to be a lot slower
@@ -46,6 +48,8 @@ def part2(positions):
 
     print(min(gas))
 """
+
+
 def part2(positions):
     gas = [0 for _ in range(max(positions) + 1)]
     cache = {}

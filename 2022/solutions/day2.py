@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+
 path_root = Path(__file__).parents[2]
 sys.path.append(str(path_root))
 
@@ -20,6 +21,7 @@ scores = {
     "C Z": (6, 7),
 }
 
+
 def play_game():
     part1 = 0
     part2 = 0
@@ -29,5 +31,6 @@ def play_game():
         part2 += b
     print(f"Part 1: {part1}")
     print(f"Part 2: {part2}")
+
 
 play_game()

@@ -18,7 +18,7 @@ def run(program):
     cache = {}
     part1 = False
     looped = set()
-    
+
     while pointer < len(program):
         command, value = program[pointer]
         sign, number = parse_value(value)
