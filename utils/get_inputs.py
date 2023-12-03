@@ -14,8 +14,11 @@ class ProblemParser:
         with open(f"{year}/input/input_{day}.txt") as f:
             lines = f.readlines()
 
-        return [line.strip() for line in lines] if strip else [line.strip("\n") for line in lines]
-
+        return (
+            [line.strip() for line in lines]
+            if strip
+            else [line.strip("\n") for line in lines]
+        )
 
 
 PYTHON_SOLUTION_TEMPLATE = """import sys
@@ -53,8 +56,14 @@ def download_input(year: str, problem_number: str) -> Response:
     session.cookies.set_cookie(cookie_obj)
 
     url = f"https://adventofcode.com/{year}/day/{problem_number}/input"
-    response = session.get(url, headers={"user-agent": "https://github.com/kendallm/advent-of-code https://mastodon.social/@kendallmorgan"})
+    response = session.get(
+        url,
+        headers={
+            "user-agent": "https://github.com/kendallm/advent-of-code https://mastodon.social/@kendallmorgan"
+        },
+    )
     return response
+
 
 def get_path(dir: str, file: str) -> Path:
     directory = Path(dir)
@@ -65,6 +74,7 @@ def get_path(dir: str, file: str) -> Path:
         LOGGER.warning(f"File: {p} already exists")
         raise FileExistsError
     return p
+
 
 def generate_python_template(year: str, problem_number: str):
     try:
@@ -89,7 +99,6 @@ def generate_input_file(year: str, problem_number: str):
         LOGGER.info("Downloaded input file")
     except Exception as _:
         return
-
 
 
 if __name__ == "__main__":

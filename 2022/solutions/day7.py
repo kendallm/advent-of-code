@@ -41,12 +41,12 @@ class Directory:
         return False
 
     def tree(self, indent=""):
-        print(f'{indent} - {self.name} (dir size={self.size})')
+        print(f"{indent} - {self.name} (dir size={self.size})")
         for directory in self.directories.values():
             directory.tree(indent + "  ")
 
         for file in self.files.values():
-            print(f'{indent}   - {file.elevation} (file, size={file.size})')
+            print(f"{indent}   - {file.elevation} (file, size={file.size})")
 
     def __repr__(self):
         return f"Directory(name={self.name}, size={self.size}, parent={self.parent})"
@@ -94,12 +94,10 @@ def main():
     print(f"Part 1: {sum(result)}")
 
     free_space = 70000000 - root.size
-    need_to_free = -(free_space-30000000)
+    need_to_free = -(free_space - 30000000)
     result = [d.size for d in dirs if d.size >= need_to_free]
     print(f"Part 2: {min(result)}")
 
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

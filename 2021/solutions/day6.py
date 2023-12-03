@@ -43,6 +43,7 @@ def solver(day_fish, days):
         day_fish = temp
     print(sum(day_fish))
 
+
 print(len(loop(80, fish.copy())))
 solver(day_fish.copy(), 80)
 solver(day_fish.copy(), 256)

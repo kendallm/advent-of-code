@@ -8,18 +8,21 @@ sys.path.append(str(path_root))
 from utils.get_inputs import ProblemParser
 
 
-Packet = namedtuple('Packet', ['version', 'type_id', 'sub_packets', 'length_id', 'length', 'val', 'operation'])
+Packet = namedtuple(
+    "Packet",
+    ["version", "type_id", "sub_packets", "length_id", "length", "val", "operation"],
+)
 
 lines = ProblemParser().load_input(2021, 16)
 binary = ""
 
 for c in lines[0]:
-    binary += format(int(c, 16), '004b')
+    binary += format(int(c, 16), "004b")
 
 
 def decode_header(binary, start):
-    version = int(binary[start:start + 3], 2)
-    type_id = int(binary[start + 3:start + 6], 2)
+    version = int(binary[start : start + 3], 2)
+    type_id = int(binary[start + 3 : start + 6], 2)
     return version, type_id
 
 
@@ -32,11 +35,11 @@ def decode(binary, start) -> Packet:
     if type_id == 4:
         # Literal
         i = start + 6
-        while binary[i] == '1':
-            val += binary[i + 1: i + 5]
+        while binary[i] == "1":
+            val += binary[i + 1 : i + 5]
             length += 5
             i += 5
-        val += binary[i + 1: i + 5]
+        val += binary[i + 1 : i + 5]
         length += 5
         i += 5
     else:
@@ -44,14 +47,14 @@ def decode(binary, start) -> Packet:
         length += 1
         if length_type_id == 0:
             # total length in bits
-            sub_length = int(binary[start + 7:start + 7 + 15], 2)
+            sub_length = int(binary[start + 7 : start + 7 + 15], 2)
             length += 15 + sub_length
             total = 0
             while sub_length > total:
                 sub_packets.append(decode(binary, start + 7 + 15 + total))
                 total += sub_packets[-1].length
         elif length_type_id == 1:
-            num_sub_packets = int(binary[start + 7:start + 7 + 11], 2)
+            num_sub_packets = int(binary[start + 7 : start + 7 + 11], 2)
             length += 11
             start = start + 7 + 11
             for i in range(num_sub_packets):

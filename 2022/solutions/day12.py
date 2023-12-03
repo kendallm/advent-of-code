@@ -36,9 +36,9 @@ def parse_graph(lines):
                 tail = node
             i += 1
             g.add_node(node)
-            nodes[node].append( (x,y))
-            all_coords[(x,y)].append(node)
-            if node.elevation == ord('a'):
+            nodes[node].append((x, y))
+            all_coords[(x, y)].append(node)
+            if node.elevation == ord("a"):
                 a_nodes.append(node)
 
     for node, coords in nodes.items():
@@ -53,7 +53,7 @@ def add_paths_for_neighbors(all_coords, coords, g, node):
             (coord[0], coord[1] - 1),
             (coord[0], coord[1] + 1),
             (coord[0] - 1, coord[1]),
-            (coord[0] + 1, coord[1])
+            (coord[0] + 1, coord[1]),
         ]
         for neighbor in neighbors:
             targets = all_coords[neighbor]
@@ -82,6 +82,5 @@ def main():
     print(min(lengths))
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

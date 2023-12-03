@@ -19,7 +19,7 @@ def find_start_of_message(line: str) -> int:
 def count_until_unique(line: str, num_unique: int) -> int:
     count = 0
     for i in range(len(line)):
-        chars = line[i: i + num_unique]
+        chars = line[i : i + num_unique]
         counter = Counter(chars)
         if len(counter.items()) == num_unique:
             return count + num_unique
@@ -34,5 +34,5 @@ def main():
     print(find_start_of_message(line))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

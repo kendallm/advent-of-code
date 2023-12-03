@@ -5,6 +5,7 @@ class Grid:
 
     def contains(self, coord):
         return coord in self.grid.keys()
+
     def get(self, coord, bounded=True):
         if coord in self.grid:
             return self.grid[coord]
@@ -17,6 +18,7 @@ class Grid:
 
     def items(self):
         return self.grid.items()
+
     def get_neighbor_coordinates(self, coord, diagonals=True, bounded=True):
         neighbors = []
         (x, y) = coord

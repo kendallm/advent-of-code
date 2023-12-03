@@ -1,7 +1,6 @@
-
 def part1():
     groups = [set()]
-    with open('day6.txt') as f:
+    with open("day6.txt") as f:
         i = 0
         for line in f.readlines():
             if line.strip() == "":
@@ -18,7 +17,7 @@ def part1():
 def part2():
 
     groups = [[set()]]
-    with open('day6.txt') as f:
+    with open("day6.txt") as f:
         i = 0
         j = 0
         for line in f.readlines():
@@ -32,7 +31,8 @@ def part2():
                 groups[i].append(set())
 
     groups = [len(set.intersection(*x[0:-1])) for x in groups]
-    print("Part2",sum(groups))
+    print("Part2", sum(groups))
+
 
 part1()
 part2()

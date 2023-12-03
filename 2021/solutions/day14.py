@@ -1,6 +1,7 @@
 import sys
 from collections import Counter
 from pathlib import Path
+
 path_root = Path(__file__).parents[2]
 sys.path.append(str(path_root))
 
@@ -14,12 +15,13 @@ default_template = lines[0]
 
 rules = {}
 
-for line in lines[2:len(lines)]:
+for line in lines[2 : len(lines)]:
     part = line.split(" -> ")
     rules[part[0]] = part[1]
 
 
 print(default_template)
+
 
 def part1():
     template = default_template
@@ -27,7 +29,7 @@ def part1():
     for n in range(10):
         print(n)
         for i in range(len(template) - 1):
-            base = template[i: i+2]
+            base = template[i : i + 2]
             base = rules[base]
             updated_template.append(base)
         updated_template.append(template[-1])

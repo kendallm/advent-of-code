@@ -4,7 +4,7 @@ import collections
 passwords = []
 
 counter = 0
-with open('day2.txt') as f:
+with open("day2.txt") as f:
     for line in f.readlines():
         counter += 1
         line = line.strip()
@@ -12,8 +12,10 @@ with open('day2.txt') as f:
         password = password_policy[1].strip()
         letter_range = password_policy[0].strip().split(" ")
         letter = letter_range[1].strip()
-        minimum, maximum = letter_range[0].split('-')
-        passwords.append(((int(minimum), int(maximum)), letter, Counter(password), password))
+        minimum, maximum = letter_range[0].split("-")
+        passwords.append(
+            ((int(minimum), int(maximum)), letter, Counter(password), password)
+        )
 
 counter = 0
 for v in passwords:
@@ -32,6 +34,8 @@ for v in passwords:
     letter = v[1]
     counts = v[2][letter]
     password = v[3]
-    if (password[first - 1] == letter and password[second - 1]  != letter) or (password[first - 1] != letter and password[second - 1]  == letter):
+    if (password[first - 1] == letter and password[second - 1] != letter) or (
+        password[first - 1] != letter and password[second - 1] == letter
+    ):
         counter = counter + 1
 print(f"Part 2 {counter}")

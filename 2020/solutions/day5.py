@@ -1,6 +1,6 @@
 seats = []
 seat_vals = []
-with open('day5.txt') as f:
+with open("day5.txt") as f:
     rows = list(range(128))
     cols = list(range(8))
     for line in f.readlines():
@@ -11,18 +11,18 @@ with open('day5.txt') as f:
         frontc = 1
         backc = len(cols)
         pointer_c = 0
-    
+
         for c in line:
-            if c == 'F':
+            if c == "F":
                 back = front + (back - front) // 2
                 pointer_r = front
-            if c == 'B':
+            if c == "B":
                 front = back - (back - front) // 2
                 pointer_r = back
-            if c == 'L':
+            if c == "L":
                 backc = frontc + (backc - frontc) // 2
                 pointer_c = frontc
-            if c == 'R':
+            if c == "R":
                 frontc = backc - (backc - frontc) // 2
                 pointer_c = backc
         # mid -= 1
@@ -40,4 +40,4 @@ for seat in seats:
     prev = seat
 
 # for seat in seat_vals:
-    # print(seat)
+# print(seat)

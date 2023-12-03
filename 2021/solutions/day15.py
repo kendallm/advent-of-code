@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+
 path_root = Path(__file__).parents[2]
 sys.path.append(str(path_root))
 
@@ -12,20 +13,21 @@ for i, line in enumerate(lines):
     for c in line:
         nums[i].append(int(c))
 
+
 def part1():
     dp = [[0 for _ in range(len(nums[0]))] for _ in range(len(nums))]
     for i in range(len(nums[0])):
         for j in range(len(nums)):
             if i == 0 and j == 0:
                 dp[i][j] = 0
-            elif i-1 > 0 and j - 1 > 0:
-                dp[i][j] = nums[i][j] + min(dp[i-1][j], dp[i][j-1])
-            elif i-1 > 0:
-                dp[i][j] = nums[i][j] + dp[i-1][j]
+            elif i - 1 > 0 and j - 1 > 0:
+                dp[i][j] = nums[i][j] + min(dp[i - 1][j], dp[i][j - 1])
+            elif i - 1 > 0:
+                dp[i][j] = nums[i][j] + dp[i - 1][j]
             else:
-                dp[i][j] = nums[i][j] + dp[i][j-1]
+                dp[i][j] = nums[i][j] + dp[i][j - 1]
 
-    print(dp[len(nums[0]) - 1][ len(nums) - 1] - nums[0][0])
+    print(dp[len(nums[0]) - 1][len(nums) - 1] - nums[0][0])
 
 
 def expand_grid(g, n):
@@ -34,7 +36,7 @@ def expand_grid(g, n):
         temp = [[0 for _ in range(len(g[0]))] for _ in range(len(g))]
         for i in range(len(g[0])):
             for j in range(len(g)):
-                val = (g[i][j] + (bump + 1))
+                val = g[i][j] + (bump + 1)
                 if val >= 10:
                     val = val - 10 + 1
                 temp[i][j] = val
@@ -44,7 +46,7 @@ def expand_grid(g, n):
         for j in range(len(g)):
             g[j].extend(expanded[i][j])
     for i in range(n):
-        curr = expanded[i: i + n + 1]
+        curr = expanded[i : i + n + 1]
         temp = curr[0]
         for i in range(1, n + 1):
             for j in range(len(temp)):
@@ -65,13 +67,15 @@ def part2():
         for j in range(len(nums)):
             if i == 0 and j == 0:
                 dp[i][j] = 0
-            elif i-1 > 0 and j - 1 > 0:
-                dp[i][j] = nums[i][j] + min(dp[i-1][j], dp[i][j-1])
-            elif i-1 > 0:
-                dp[i][j] = nums[i][j] + dp[i-1][j]
+            elif i - 1 > 0 and j - 1 > 0:
+                dp[i][j] = nums[i][j] + min(dp[i - 1][j], dp[i][j - 1])
+            elif i - 1 > 0:
+                dp[i][j] = nums[i][j] + dp[i - 1][j]
             else:
-                dp[i][j] = nums[i][j] + dp[i][j-1]
+                dp[i][j] = nums[i][j] + dp[i][j - 1]
 
-    print(dp[len(nums[0]) - 1][ len(nums) - 1] - nums[0][0])
+    print(dp[len(nums[0]) - 1][len(nums) - 1] - nums[0][0])
+
+
 part1()
 part2()

@@ -42,6 +42,7 @@ def count_flags(items):
         return count
     return count + 1
 
+
 def main():
     lines = ProblemParser().load_input(2022, 8)
     count = 0
@@ -99,6 +100,5 @@ def main():
     print(result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
-    
