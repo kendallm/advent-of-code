@@ -25,10 +25,10 @@ def verify_report(report, skip = None):
         if skip is not None and i+1 == skip:
             continue
         if curr == prev:
-            return False, i+1
+            return False, i
         dist = abs(curr - prev)
         if (dist == 0 or dist > max_dist):
-            return False, i + 1
+            return False, i
         
         if prev < curr:
             dec = True
@@ -36,20 +36,18 @@ def verify_report(report, skip = None):
             inc = True
 
         if dec and inc:
-            return False, i + 1
+            return False, i
         if inc and dec:
-            return False, i + 1
+            return False, i
         prev = curr
 
     return True, -1
     
 def verify_with_dampener(report):
     valid, idx = verify_report(report)
-    if idx >= 0:
-        print(idx)
     if valid:
         return True
-    for i in reversed(range(idx + 1)):
+    for i in [idx, idx - 1, idx + 1]:
         valid, _ = verify_report(report, skip=i)
         if valid:
             return True
