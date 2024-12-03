@@ -24,7 +24,7 @@ class ProblemParser:
 PYTHON_SOLUTION_TEMPLATE = """import sys
 from pathlib import Path
 
-path_root = Path(__file__).parents[2]
+path_root = Path(__file__).parents[1]
 sys.path.append(str(path_root))
 
 from utils.get_inputs import ProblemParser
@@ -78,7 +78,7 @@ def get_path(dir: str, file: str) -> Path:
 
 def generate_python_template(year: str, problem_number: str):
     try:
-        solution_path = get_path(f"{year}/solutions/", f"day{problem_number}.py")
+        solution_path = get_path(f"{year}/", f"day{problem_number}.py")
         solution_path.touch()
         with solution_path.open("w") as f:
             f.write(PYTHON_SOLUTION_TEMPLATE % (year, problem_number))
