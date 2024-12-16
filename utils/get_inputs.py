@@ -1,10 +1,11 @@
 import coloredlogs, logging
 import sys
 import requests
-from pathlib import Path
 
+from pathlib import Path
 from requests.models import Response
 
+import networkx as nx
 
 class ProblemParser:
     def __init__(self):
@@ -20,6 +21,31 @@ class ProblemParser:
             else [line.strip("\n") for line in lines]
         )
 
+    def build_graph(self, lines: list[str], diagonals: bool = False) -> nx.Graph:
+        g = nx.Graph()
+        for y, line in enumerate(reversed(lines)):
+            for x, v in enumerate(line):
+                node = (x, y)
+                g.add_node(node)
+                if y == 0:
+                    if x == len(lines[0]) - 1:
+                        continue
+                    right = (x+1, y)
+                    g.add_edge(node, right)
+                    continue
+                top = (x, y - 1)
+                g.add_edge(node, top)
+
+                if diagonals:
+                    if x > 0:
+                        top_l = (x - 1, y - 1)
+                        g.add_edge(node, top_l)
+                    if x < len(lines[0]) - 1:
+                        top_r = (x + 1, y - 1)
+                        g.add_edge(node, top_r)
+        for node in g.nodes:
+            g.nodes[node]['val'] = lines[node[1]][node[0]]
+        return g        
 
 PYTHON_SOLUTION_TEMPLATE = """import sys
 from pathlib import Path
