@@ -23,18 +23,15 @@ class ProblemParser:
 
     def build_graph(self, lines: list[str], diagonals: bool = False) -> nx.Graph:
         g = nx.Graph()
-        for y, line in enumerate(reversed(lines)):
-            for x, v in enumerate(line):
+        for y, line in enumerate(lines):
+            for x, _ in enumerate(line):
                 node = (x, y)
-                g.add_node(node)
-                if y == 0:
-                    if x == len(lines[0]) - 1:
-                        continue
+                if x != len(line) - 1:
                     right = (x+1, y)
                     g.add_edge(node, right)
-                    continue
-                top = (x, y - 1)
-                g.add_edge(node, top)
+                if y != 0:
+                    top = (x, y - 1)
+                    g.add_edge(node, top)
 
                 if diagonals:
                     if x > 0:
